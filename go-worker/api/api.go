@@ -6,21 +6,16 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/cblokkeel/footies/client"
+	"github.com/cblokkeel/footies/service"
 )
 
-type Mock struct {
-	Age  int    `json:"age"`
-	Name string `json:"name"`
-}
-
 type Api struct {
-	jsonPlaceholderClient *client.JsonPlaceholderClient
+	todoService *service.TodoService
 }
 
-func NewApi(jsonPlaceholderClient *client.JsonPlaceholderClient) *Api {
+func NewApi(todoService *service.TodoService) *Api {
 	return &Api{
-		jsonPlaceholderClient,
+		todoService,
 	}
 }
 
@@ -30,13 +25,13 @@ func (a *Api) Start() {
 	log.Fatal(http.ListenAndServe(":8888", nil))
 }
 
-// TODO: separate the logic from this endpoint handler, in a service for exemple
 func (a *Api) handleGetTodo(w http.ResponseWriter, r *http.Request) {
-	todo, err := a.jsonPlaceholderClient.GetTodo()
+	todo, err := a.todoService.GetTodo(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Something went wrong"))
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(todo)
 }
