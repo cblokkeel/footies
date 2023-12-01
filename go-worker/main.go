@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
+	"time"
+
+	"github.com/cblokkeel/footies/api"
+	"github.com/cblokkeel/footies/client"
+)
 
 func main() {
-	fmt.Println("init")
+	baseClient := client.NewClient(&http.Client{Timeout: time.Second * 10})
+	jsonPlaceHolderClient := client.NewJsonPlaceholderClient(baseClient)
+
+	api := api.NewApi(jsonPlaceHolderClient)
+	api.Start()
 }
