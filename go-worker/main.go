@@ -10,10 +10,14 @@ import (
 	"github.com/cblokkeel/footies/cache"
 	"github.com/cblokkeel/footies/client"
 	"github.com/cblokkeel/footies/service"
+	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("No env file found")
+	}
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
@@ -25,9 +29,9 @@ func main() {
 	redisCache := cache.NewRedisCache(redisClient)
 
 	baseClient := client.NewClient(&http.Client{Timeout: time.Second * 10})
-	jsonPlaceHolderClient := client.NewJsonPlaceholderClient(baseClient)
-	todoService := service.NewTodoService(redisCache, jsonPlaceHolderClient)
+	footballAPIClient := client.NewFootballAPIClient(baseClient, "https://api-football-v1.p.rapidapi.com/v3/fixtures")
+	matchService := service.NewMatchService(redisCache, footballAPIClient)
 
-	api := api.NewApi(todoService)
+	api := api.NewApi(matchService)
 	api.Start()
 }
