@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/cblokkeel/footies/constants"
 	"github.com/cblokkeel/footies/service"
 )
 
@@ -31,9 +32,14 @@ func (a *Api) handleGetMatchs(w http.ResponseWriter, r *http.Request) {
 	season := r.URL.Query().Get("season")
 	date := r.URL.Query().Get("date")
 
+	if leagueID == "" || season == "" || date == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(constants.ErrorBadRequest))
+	}
+
 	matchs, err := a.matchService.GetMatchByLeague(r.Context(), date, leagueID, season)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(a.getStatusByErr(err))
 		w.Write([]byte("Something went wrong"))
 		return
 	}
@@ -46,10 +52,19 @@ func (a *Api) handleGetMatch(w http.ResponseWriter, r *http.Request) {
 
 	match, err := a.matchService.GetMatchByID(r.Context(), matchID)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(a.getStatusByErr(err))
 		w.Write([]byte("Something went wrong"))
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(match)
+}
+
+func (a *Api) getStatusByErr(err error) int {
+	switch err.Error() {
+	case string(constants.ErrorNotFound):
+		return http.StatusNotFound
+	default:
+		return http.StatusInternalServerError
+	}
 }

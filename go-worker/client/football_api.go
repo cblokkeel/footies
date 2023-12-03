@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/cblokkeel/footies/constants"
 	"github.com/cblokkeel/footies/types"
 )
 
@@ -38,8 +39,10 @@ func (c *FootballAPIClient) GetMatchsByLeague(date string, season string, league
 		"league": leagueID,
 	})
 	if err := c.GetReq(url, &resp, c.getHeaders()); err != nil {
-		// TODO better handling error
-		return nil, fmt.Errorf("Error while fetching matches")
+		return nil, fmt.Errorf(string(constants.ErrorSomethingWentWrong))
+	}
+	if len(resp.Response) == 0 {
+		return nil, fmt.Errorf(string(constants.ErrorNotFound))
 	}
 	return resp.Response, nil
 }
@@ -50,11 +53,10 @@ func (c *FootballAPIClient) GetMatchByID(ID string) (*types.Match, error) {
 		"id": ID,
 	})
 	if err := c.GetReq(url, &resp, c.getHeaders()); err != nil {
-		// TODO better handling error
-		return nil, fmt.Errorf("Error while fetching match %s", ID)
+		return nil, fmt.Errorf(string(constants.ErrorSomethingWentWrong))
 	}
 	if len(resp.Response) == 0 {
-		return nil, fmt.Errorf("No match found")
+		return nil, fmt.Errorf(string(constants.ErrorNotFound))
 	}
 	return resp.Response[0], nil
 }
