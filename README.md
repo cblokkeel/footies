@@ -25,9 +25,9 @@ The Restful API is the bridge between the front-end and the worker. It communica
 The Worker communicates with a third party API to get live informations about currently playing football games.
 It exposes informations about matches and leagues with a GET endpoint, and also listen for some messages to trigger job in a redis pub/sub channel.
 
-#### Job specs
+### Architecture
 
-TODO
+![App architecture](./architecture.drawio.svg)
 
 ## Specs
 
