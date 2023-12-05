@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cblokkeel/footies/constants"
 	"github.com/cblokkeel/footies/types"
 )
 
@@ -15,7 +14,7 @@ type FootballAPIClient struct {
 }
 
 type MatchResponse struct {
-	Response []*types.Match
+	Response []*types.Match `json:"response"`
 }
 
 func NewFootballAPIClient(baseClient *Client, url string) *FootballAPIClient {
@@ -27,7 +26,7 @@ func NewFootballAPIClient(baseClient *Client, url string) *FootballAPIClient {
 
 func (c *FootballAPIClient) getHeaders() map[string]string {
 	return map[string]string{
-		"X-RapidAPI-Key": os.Getenv("FOOTBALL_API_KEY"), // ENV
+		"X-RapidAPI-Key": os.Getenv("FOOTBALL_API_KEY"),
 	}
 }
 
@@ -39,10 +38,7 @@ func (c *FootballAPIClient) GetMatchsByLeague(date string, season string, league
 		"league": leagueID,
 	})
 	if err := c.GetReq(url, &resp, c.getHeaders()); err != nil {
-		return nil, fmt.Errorf(string(constants.ErrorSomethingWentWrong))
-	}
-	if len(resp.Response) == 0 {
-		return nil, fmt.Errorf(string(constants.ErrorNotFound))
+		return nil, err
 	}
 	return resp.Response, nil
 }
@@ -53,10 +49,8 @@ func (c *FootballAPIClient) GetMatchByID(ID string) (*types.Match, error) {
 		"id": ID,
 	})
 	if err := c.GetReq(url, &resp, c.getHeaders()); err != nil {
-		return nil, fmt.Errorf(string(constants.ErrorSomethingWentWrong))
-	}
-	if len(resp.Response) == 0 {
-		return nil, fmt.Errorf(string(constants.ErrorNotFound))
+		fmt.Println(err)
+		return nil, err
 	}
 	return resp.Response[0], nil
 }

@@ -10,7 +10,7 @@ type Match struct {
 }
 
 type Fixture struct {
-	ID     int     `json:"id"`
+	ID     string  `json:"id"`
 	Venue  *Venue  `json:"venue"`
 	Status *Status `json:"status"`
 }
