@@ -37,7 +37,7 @@ func (a *Api) handleGetMatchs(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(constants.ErrorBadRequest))
 	}
 
-	matchs, err := a.matchService.GetMatchByLeague(r.Context(), date, leagueID, season)
+	matchs, err := a.matchService.GetMatchByLeague(r.Context(), date, leagueID, season, true)
 	if err != nil {
 		w.WriteHeader(a.getStatusByErr(err))
 		w.Write([]byte("Something went wrong"))
@@ -50,7 +50,7 @@ func (a *Api) handleGetMatchs(w http.ResponseWriter, r *http.Request) {
 func (a *Api) handleGetMatch(w http.ResponseWriter, r *http.Request) {
 	matchID := r.URL.Query().Get("id")
 
-	match, err := a.matchService.GetMatchByID(r.Context(), matchID)
+	match, err := a.matchService.GetMatchByID(r.Context(), matchID, true)
 	if err != nil {
 		w.WriteHeader(a.getStatusByErr(err))
 		w.Write([]byte("Something went wrong"))

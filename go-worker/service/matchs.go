@@ -35,11 +35,13 @@ func NewMatchService(cache cache.Cacher, pubsub pubsub.PubSub[*redis.Message], c
 	}
 }
 
-func (s *MatchService) GetMatchByLeague(ctx context.Context, date string, leagueID string, season string) ([]*dto.MatchDTO, error) {
+func (s *MatchService) GetMatchByLeague(ctx context.Context, date string, leagueID string, season string, cached bool) ([]*dto.MatchDTO, error) {
 	cacheKey := fmt.Sprintf("matchs_%s_%s", leagueID, date)
-	var cachedMatchs []*dto.MatchDTO
-	if exists := s.cache.Get(ctx, cacheKey, &cachedMatchs); exists {
-		return cachedMatchs, nil
+	if cached {
+		var cachedMatchs []*dto.MatchDTO
+		if exists := s.cache.Get(ctx, cacheKey, &cachedMatchs); exists {
+			return cachedMatchs, nil
+		}
 	}
 
 	rawMatchs, err := s.client.GetMatchsByLeague(date, season, leagueID)
@@ -47,15 +49,19 @@ func (s *MatchService) GetMatchByLeague(ctx context.Context, date string, league
 		return nil, err
 	}
 	matchs := types.ToMatchDTOs(rawMatchs)
-	s.cache.Set(ctx, cacheKey, matchs, time.Minute)
+	if cached {
+		s.cache.Set(ctx, cacheKey, matchs, time.Minute)
+	}
 	return matchs, nil
 }
 
-func (s *MatchService) GetMatchByID(ctx context.Context, matchID string) (*dto.MatchDTO, error) {
+func (s *MatchService) GetMatchByID(ctx context.Context, matchID string, cached bool) (*dto.MatchDTO, error) {
 	cacheKey := fmt.Sprintf("match_%s", matchID)
-	var cachedMatch *dto.MatchDTO
-	if exists := s.cache.Get(ctx, cacheKey, &cachedMatch); exists {
-		return cachedMatch, nil
+	if cached {
+		var cachedMatch *dto.MatchDTO
+		if exists := s.cache.Get(ctx, cacheKey, &cachedMatch); exists {
+			return cachedMatch, nil
+		}
 	}
 
 	rawMatch, err := s.client.GetMatchByID(matchID)
@@ -63,7 +69,9 @@ func (s *MatchService) GetMatchByID(ctx context.Context, matchID string) (*dto.M
 		return nil, err
 	}
 	match := rawMatch.ToDTO()
-	s.cache.Set(ctx, cacheKey, match, time.Minute)
+	if cached {
+		s.cache.Set(ctx, cacheKey, match, time.Minute)
+	}
 	return match, nil
 }
 
@@ -80,7 +88,7 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 
 	var lastChrono int
 	for {
-		matchInfo, err := s.GetMatchByID(ctx, matchID)
+		matchInfo, err := s.GetMatchByID(ctx, matchID, false)
 		if err != nil {
 			return err
 		}
@@ -89,7 +97,7 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 			break
 		}
 		if matchInfo.Elapsed != lastChrono { // Later check other informations
-			if err := s.pubsub.Publish(ctx, "match_%s_update", matchInfo.Elapsed); err != nil {
+			if err := s.pubsub.Publish(ctx, fmt.Sprintf("match_%s_update", matchID), matchInfo.Elapsed); err != nil {
 				return fmt.Errorf("error publishing update for match %s", matchID)
 			}
 			lastChrono = matchInfo.Elapsed

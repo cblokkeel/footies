@@ -1,7 +1,6 @@
 package client
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/cblokkeel/footies/types"
@@ -49,7 +48,6 @@ func (c *FootballAPIClient) GetMatchByID(ID string) (*types.Match, error) {
 		"id": ID,
 	})
 	if err := c.GetReq(url, &resp, c.getHeaders()); err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return resp.Response[0], nil
