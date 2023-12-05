@@ -10,7 +10,7 @@ export const mockedMatchs = [
 			status: {
 				long: "Not Started",
 				short: "NS",
-				elapsed: 90,
+				elapsed: 38,
 			},
 		},
 		league: {

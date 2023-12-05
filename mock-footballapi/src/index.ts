@@ -9,6 +9,7 @@ app.use(cors());
 app.get("/", (req, res) => {
 	const league = req.query["league"];
 	if (league) {
+		console.log(`Get matchs by league: ${league}`);
 		const matchs = findByLeague(league as string);
 		if (matchs.length === 0) {
 			return res.sendStatus(404);
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 	}
 	const matchId = req.query["id"];
 	if (matchId) {
+		console.log(`Get match by id: ${matchId}`);
 		const matchs = findById(matchId as string);
 		if (matchs.length === 0) {
 			return res.sendStatus(404);
