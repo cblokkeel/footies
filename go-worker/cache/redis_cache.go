@@ -36,3 +36,18 @@ func (c *RedisCache) Set(ctx context.Context, key string, val interface{}, ttl t
 	}
 	return c.client.Set(ctx, key, stringifyVal, ttl).Err()
 }
+
+func (c *RedisCache) HasSet(ctx context.Context, setName string, val string) bool {
+	if exists, _ := c.client.SIsMember(ctx, setName, val).Result(); exists {
+		return true
+	}
+	return false // Todo maybe check if err and return accordingly
+}
+
+func (c *RedisCache) AddSet(ctx context.Context, setName string, val string) error {
+	return c.client.SAdd(ctx, setName, val).Err()
+}
+
+func (c *RedisCache) RemoveSet(ctx context.Context, setName string, val string) error {
+	return c.client.SRem(ctx, setName, val).Err()
+}

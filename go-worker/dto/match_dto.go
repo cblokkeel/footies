@@ -12,7 +12,7 @@ const (
 )
 
 type MatchDTO struct {
-	ID       int         `json:"id"`
+	ID       string      `json:"id"`
 	Elapsed  int         `json:"elapsed"`
 	Status   MatchStatus `json:"status"`
 	HomeTeam TeamDTO     `json:"homeTeam"`

@@ -4,11 +4,15 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/cblokkeel/footies/api"
 	"github.com/cblokkeel/footies/cache"
 	"github.com/cblokkeel/footies/client"
+	"github.com/cblokkeel/footies/constants"
+	"github.com/cblokkeel/footies/job"
+	"github.com/cblokkeel/footies/pubsub"
 	"github.com/cblokkeel/footies/service"
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
@@ -27,11 +31,17 @@ func main() {
 		panic(fmt.Errorf("Couldnt connect to redis"))
 	}
 	redisCache := cache.NewRedisCache(redisClient)
+	pubsub := pubsub.NewRedisPubSub(redisClient)
 
 	baseClient := client.NewClient(&http.Client{Timeout: time.Second * 10})
-	footballAPIClient := client.NewFootballAPIClient(baseClient, "https://api-football-v1.p.rapidapi.com/v3/fixtures")
-	matchService := service.NewMatchService(redisCache, footballAPIClient)
+	footballAPIClient := client.NewFootballAPIClient(baseClient, os.Getenv(constants.FootballApiUrl), os.Getenv(constants.FootballApiKey))
+	matchService := service.NewMatchService(redisCache, pubsub, footballAPIClient)
 
 	api := api.NewApi(matchService)
-	api.Start()
+	go api.Start()
+
+	job := job.NewJob(pubsub, matchService)
+	go job.Start()
+
+	select {} // keep running
 }
