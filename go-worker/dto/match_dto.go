@@ -1,14 +1,14 @@
 package dto
 
-type MatchStatus int
+type MatchStatus string
 
 const (
-	Finished MatchStatus = iota
-	NotStarted
-	HalfTime
-	Ongoing
-	Penalties
-	Interrupted
+	Finished    MatchStatus = "finished"
+	NotStarted  MatchStatus = "not_started"
+	HalfTime    MatchStatus = "half_time"
+	Ongoing     MatchStatus = "ongoing"
+	Penalties   MatchStatus = "penalties"
+	Interrupted MatchStatus = "interrupted"
 )
 
 type MatchDTO struct {
