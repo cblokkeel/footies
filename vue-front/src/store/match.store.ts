@@ -10,5 +10,17 @@ export const useMatchStore = defineStore("match", () => {
 		matchs.value = res;
 	}
 
-	return { matchs, fetchMatchs };
+	async function monitorMatchs(ids: string[]) {
+		const connexion = new WebSocket("ws://localhost:3000");
+		connexion.onopen = function (_) {
+			console.log("Connected");
+			connexion.send(ids.join(","));
+		};
+
+		connexion.onmessage = function (msg) {
+			console.log(msg);
+		};
+	}
+
+	return { matchs, fetchMatchs, monitorMatchs };
 });
