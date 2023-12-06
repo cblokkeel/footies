@@ -11,6 +11,7 @@ import (
 	"github.com/cblokkeel/footies/cache"
 	"github.com/cblokkeel/footies/client"
 	"github.com/cblokkeel/footies/constants"
+	"github.com/cblokkeel/footies/job"
 	"github.com/cblokkeel/footies/pubsub"
 	"github.com/cblokkeel/footies/service"
 	"github.com/joho/godotenv"
@@ -33,20 +34,14 @@ func main() {
 	pubsub := pubsub.NewRedisPubSub(redisClient)
 
 	baseClient := client.NewClient(&http.Client{Timeout: time.Second * 10})
-	footballAPIClient := client.NewFootballAPIClient(baseClient, os.Getenv(constants.FootballApiUrl))
+	footballAPIClient := client.NewFootballAPIClient(baseClient, os.Getenv(constants.FootballApiUrl), os.Getenv(constants.FootballApiKey))
 	matchService := service.NewMatchService(redisCache, pubsub, footballAPIClient)
 
 	api := api.NewApi(matchService)
-	go func() {
-		api.Start()
-	}()
+	go api.Start()
 
-	ch, err := pubsub.Subscribe(context.Background(), "monitoring")
-	if err != nil {
-		panic(err)
-	}
-	for msg := range ch {
-		matchID := msg.Payload
-		go matchService.MonitorMatch(context.Background(), matchID)
-	}
+	job := job.NewJob(pubsub, matchService)
+	go job.Start()
+
+	select {} // keep running
 }

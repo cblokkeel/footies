@@ -1,13 +1,12 @@
 package client
 
 import (
-	"os"
-
 	"github.com/cblokkeel/footies/types"
 )
 
 type FootballAPIClient struct {
-	url string
+	url    string
+	apiKey string
 
 	*Client
 }
@@ -16,16 +15,17 @@ type MatchResponse struct {
 	Response []*types.Match `json:"response"`
 }
 
-func NewFootballAPIClient(baseClient *Client, url string) *FootballAPIClient {
+func NewFootballAPIClient(baseClient *Client, url string, apiKey string) *FootballAPIClient {
 	return &FootballAPIClient{
 		url:    url,
+		apiKey: apiKey,
 		Client: baseClient,
 	}
 }
 
 func (c *FootballAPIClient) getHeaders() map[string]string {
 	return map[string]string{
-		"X-RapidAPI-Key": os.Getenv("FOOTBALL_API_KEY"),
+		"X-RapidAPI-Key": c.apiKey,
 	}
 }
 

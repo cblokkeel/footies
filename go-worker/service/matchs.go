@@ -109,6 +109,9 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 		time.Sleep(time.Duration(sleepTime) * time.Second)
 	}
 
+	if err := s.pubsub.Publish(ctx, fmt.Sprintf("match_%s_finished", matchID), struct{}{}); err != nil {
+		return fmt.Errorf("error publishing ping to notify end of match %s", matchID)
+	}
 	if err := s.cache.RemoveSet(ctx, activeMatchesKey, matchID); err != nil {
 		return fmt.Errorf("could not remove %s to monitored match keys %v", matchID, activeMatchesKey)
 	}
