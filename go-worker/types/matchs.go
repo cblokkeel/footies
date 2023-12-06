@@ -99,8 +99,8 @@ func (m *Match) ToDTO() *dto.MatchDTO {
 
 func ToMatchDTOs(matchs []*Match) []*dto.MatchDTO {
 	var result []*dto.MatchDTO
-	for i, m := range matchs {
-		result[i] = m.ToDTO()
+	for _, m := range matchs {
+		result = append(result, m.ToDTO())
 	}
 	return result
 }
