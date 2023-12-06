@@ -10,7 +10,7 @@ export interface Match {
 export interface Team {
 	name: string;
 	logo: string;
-	scored: number;
+	score: number;
 }
 
 export interface Stadium {

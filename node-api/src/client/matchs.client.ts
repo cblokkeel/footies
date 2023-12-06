@@ -8,8 +8,12 @@ export async function fetchMatchsByLeagueAndDate(
 	date: string,
 	season: string,
 ): Promise<Match[]> {
-	const res = await axios<Match[]>(
-		`${API_BASE_URL}/matchs?league=${league}&date=${date}&season=${season}`,
-	);
-	return res.data;
+	try {
+		const res = await axios<Match[]>(
+			`${API_BASE_URL}/matchs?league=${league}&date=${date}&season=${season}`,
+		);
+		return res.data;
+	} catch (err) {
+		return []; // not the best error handling, to refacto
+	}
 }
