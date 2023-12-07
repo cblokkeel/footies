@@ -1,15 +1,13 @@
-import { createApp } from "vue";
-import "./style.css";
-import App from "./App.vue";
 import { createPinia } from "pinia";
+import { createApp } from "vue";
+import { createRouter, createWebHistory } from "vue-router";
+import App from "./App.vue";
 import { routes } from "./routes";
-import {
-	createRouter,
-	createWebHashHistory,
-	createWebHistory,
-} from "vue-router";
+import "./style.css";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
 const app = createApp(App);
 const router = createRouter({

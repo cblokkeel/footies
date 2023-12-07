@@ -4,6 +4,7 @@ import { useMatchStore } from "../store/match.store";
 import Match from "../components/Match.vue";
 import LeagueSelector from "../components/LeagueSelector.vue";
 import { useLeagueStore } from "../store/leagues.store";
+import CoinsComponent from "../components/CoinsComponent.vue";
 const matchStore = useMatchStore();
 const leagueStore = useLeagueStore();
 
@@ -18,9 +19,10 @@ onMounted(async () => {
 </script>
 
 <template>
+	<CoinsComponent></CoinsComponent>
 	<div class="container">
 		<LeagueSelector></LeagueSelector>
-		<div v-if="matchStore.matchs.length > 0">
+		<div class="matchs" v-if="matchStore.matchs.length > 0">
 			<Match
 				v-for="match in matchStore.matchs"
 				:key="match.id"
@@ -35,5 +37,11 @@ onMounted(async () => {
 .container {
 	display: flex;
 	flex-direction: column;
+}
+
+.matchs {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
 }
 </style>

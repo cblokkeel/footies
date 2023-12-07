@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Match } from "../api/api";
+import BetsComponent from "./BetsComponent.vue";
 import Team from "./Team.vue";
 
 defineProps<{ match: Match }>();
@@ -14,9 +15,11 @@ defineProps<{ match: Match }>();
 		<span v-if="match.status === 'not_started'">Match à venir</span>
 		<span v-if="match.status === 'half_time'">Mi temps</span>
 		<div class="match__team-container">
-			<Team :team="match.homeTeam" :away="false" /> -
+			<Team :team="match.homeTeam" :away="false" />
+			-
 			<Team :team="match.awayTeam" :away="true" />
 		</div>
+		<BetsComponent :match="match"></BetsComponent>
 	</div>
 </template>
 
