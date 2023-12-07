@@ -12,18 +12,41 @@ Footies has 3 main services :
 -   An API written in Node
 -   A worker written in Golang
 
+### Run with docker
+
+```
+docker-compose up -d --build
+```
+
 ### Front-end
 
-TODO
+#### Run manually
+
+```
+yarn install
+yarn dev
+```
 
 ### API
 
 The Restful API is the bridge between the front-end and the worker. It communicates with the front-end with websockets, and with workers using redis pub/sub or REST API.
 
+#### Run manually
+
+```
+yarn install
+yarn dev
+```
+
 ### Worker
 
 The Worker communicates with a third party API to get live informations about currently playing football games.
 It exposes informations about matches and leagues with a GET endpoint, and also listen for some messages to trigger job in a redis pub/sub channel.
+
+```
+go mod tidy
+make run
+```
 
 #### Job specs
 
