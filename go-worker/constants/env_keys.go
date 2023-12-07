@@ -7,4 +7,6 @@ const (
 	FootballApiUrl string = "FOOTBALL_API_URL"
 
 	InBetweenRefreshInformation string = "IN_BETWEEN_REFRESH_INFORMATION_SECS"
+
+	RedisAddr string = "REDIS_ADDR"
 )

@@ -23,7 +23,7 @@ func main() {
 		fmt.Println("No env file found")
 	}
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     os.Getenv(constants.RedisAddr),
 		Password: "",
 		DB:       0,
 	})
