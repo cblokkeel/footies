@@ -21,9 +21,10 @@ type MatchDTO struct {
 }
 
 type TeamDTO struct {
-	Name  string `json:"name"`
-	Logo  string `json:"logo"`
-	Score int    `json:"score"`
+	Name           string  `json:"name"`
+	Logo           string  `json:"logo"`
+	Score          int     `json:"score"`
+	WinProbability float32 `json:"winProbability"`
 }
 
 type StadiumDTO struct {

@@ -21,10 +21,11 @@ type TeamInformations struct {
 }
 
 type Team struct {
-	ID     int    `json:"id"`
-	Name   string `json:"name"`
-	Logo   string `json:"logo"`
-	Winner bool   `json:"winner"`
+	ID             int     `json:"id"`
+	Name           string  `json:"name"`
+	Logo           string  `json:"logo"`
+	Winner         bool    `json:"winner"`
+	WinProbability float32 `json:"winProbability"`
 }
 
 type Score struct {
@@ -71,15 +72,17 @@ func (m *Match) getStatus() dto.MatchStatus {
 func (m *Match) getTeamInformation(home bool) *dto.TeamDTO {
 	if home {
 		return &dto.TeamDTO{
-			Name:  m.TeamInformations.Home.Name,
-			Logo:  m.TeamInformations.Home.Logo,
-			Score: m.Score.Home,
+			Name:           m.TeamInformations.Home.Name,
+			Logo:           m.TeamInformations.Home.Logo,
+			Score:          m.Score.Home,
+			WinProbability: m.TeamInformations.Home.WinProbability,
 		}
 	}
 	return &dto.TeamDTO{
-		Name:  m.TeamInformations.Away.Name,
-		Logo:  m.TeamInformations.Away.Logo,
-		Score: m.Score.Away,
+		Name:           m.TeamInformations.Away.Name,
+		Logo:           m.TeamInformations.Away.Logo,
+		Score:          m.Score.Away,
+		WinProbability: m.TeamInformations.Away.WinProbability,
 	}
 }
 
