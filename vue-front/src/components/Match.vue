@@ -12,6 +12,7 @@ defineProps<{ match: Match }>();
 		>
 		<span v-if="match.status === 'finished'">Terminé</span>
 		<span v-if="match.status === 'not_started'">Match à venir</span>
+		<span v-if="match.status === 'half_time'">Mi temps</span>
 		<div class="match__team-container">
 			<Team :team="match.homeTeam" :away="false" /> -
 			<Team :team="match.awayTeam" :away="true" />
