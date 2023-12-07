@@ -28,7 +28,7 @@ defineProps<{ match: Match }>();
 	padding: 10px;
 
 	&__time {
-		color: green;
+		color: #3ae374;
 	}
 
 	&__team-container {
