@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { Match, fetchMatchesByLeagueAndDate } from "../api/api";
 
 export const useMatchStore = defineStore("match", () => {
@@ -46,5 +46,13 @@ export const useMatchStore = defineStore("match", () => {
 		};
 	}
 
-	return { matchs, fetchMatchs, monitorMatchs };
+	function isFinished(id: string) {
+		const match = matchs.value.filter((match) => match.id === id).pop();
+		if (match && match.status === "finished") {
+			return true;
+		}
+		return false;
+	}
+
+	return { matchs, fetchMatchs, monitorMatchs, isFinished };
 });

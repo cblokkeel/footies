@@ -13,6 +13,7 @@ export interface Team {
 	name: string;
 	logo: string;
 	score: number;
+	winProbability: number;
 }
 
 export interface Stadium {

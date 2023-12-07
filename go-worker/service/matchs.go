@@ -95,10 +95,6 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 		if err != nil {
 			return err
 		}
-		if matchInfo.Status == dto.Finished {
-			log.Printf("Match %s has ended", matchID)
-			break
-		}
 		if matchInfo.Elapsed != lastChrono {
 			if err := s.publishUpdate(ctx, matchID, fmt.Sprintf("chrono_%d", matchInfo.Elapsed)); err != nil {
 				return err
@@ -124,6 +120,11 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 			lastStatus = matchInfo.Status
 		}
 
+		if matchInfo.Status == dto.Finished {
+			log.Printf("Match %s has ended", matchID)
+			break
+		}
+
 		sleepTime, err := strconv.Atoi(os.Getenv(constants.InBetweenRefreshInformation))
 		if err != nil {
 			return fmt.Errorf("invalid configuration, %s is not a number", os.Getenv(constants.InBetweenRefreshInformation))
@@ -131,9 +132,6 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 		time.Sleep(time.Duration(sleepTime) * time.Second)
 	}
 
-	if err := s.pubsub.Publish(ctx, fmt.Sprintf("match_%s_finished", matchID), struct{}{}); err != nil {
-		return fmt.Errorf("error publishing ping to notify end of match %s", matchID)
-	}
 	if err := s.cache.RemoveSet(ctx, activeMatchesKey, matchID); err != nil {
 		return fmt.Errorf("could not remove %s to monitored match keys %v", matchID, activeMatchesKey)
 	}
