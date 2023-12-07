@@ -24,20 +24,25 @@ export const useMatchStore = defineStore("match", () => {
 			matchs.value
 				.filter((m) => m.id === updatedMatchId)
 				.map((m) => {
-					if (updateType === "chrono") {
-						m.elapsed = parseInt(updateValue);
-					}
-					if (updateType === "homegoal") {
-						m.homeTeam.score = parseInt(updateValue);
-					}
-					if (updateType === "awaygoal") {
-						m.awayTeam.score = parseInt(updateValue);
-					}
-					if (updateType === "status") {
-						m.status = updateValue;
+					switch (updateType) {
+						case "chrono":
+							m.elapsed = parseInt(updateValue);
+							break;
+						case "homegoal":
+							m.homeTeam.score = parseInt(updateValue);
+							break;
+						case "awaygoal":
+							m.awayTeam.score = parseInt(updateValue);
+							break;
+						case "status":
+							m.status = updateValue;
+							break;
+						default:
+							console.log(
+								`unexpected update type: ${updateType}`,
+							);
 					}
 				});
-			console.log(updatedMatchId, updateType, updateValue);
 		};
 	}
 
