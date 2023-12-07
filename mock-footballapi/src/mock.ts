@@ -52,7 +52,7 @@ export const mockedMatchs = [
 			status: {
 				long: "In Play",
 				short: "1H",
-				elapsed: 15,
+				elapsed: 18,
 			},
 		},
 		league: {

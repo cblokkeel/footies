@@ -27,7 +27,7 @@ import { createClient } from "redis";
 				.split(",")
 				.forEach((matchId) => {
 					redis.subscribe(`match_${matchId}_update`, (msg) => {
-						console.log("got : ", msg);
+						ws.send(`${matchId}_${msg}`);
 					});
 				});
 		});

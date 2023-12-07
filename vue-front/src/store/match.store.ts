@@ -18,7 +18,27 @@ export const useMatchStore = defineStore("match", () => {
 		};
 
 		connexion.onmessage = function (msg) {
-			console.log(msg);
+			const splittedMsg = (msg.data as string).split("_");
+			const updatedMatchId = splittedMsg[0];
+			const updateType = splittedMsg[1];
+			const updateValue = splittedMsg[2];
+			matchs.value
+				.filter((m) => m.id === updatedMatchId)
+				.map((m) => {
+					if (updateType === "chrono") {
+						m.elapsed = parseInt(updateValue);
+					}
+					if (updateType === "homegoal") {
+						m.homeTeam.score = parseInt(updateValue);
+					}
+					if (updateType === "awaygoal") {
+						m.awayTeam.score = parseInt(updateValue);
+					}
+					if (updateType === "status") {
+						m.status = updateValue;
+					}
+				});
+			console.log(updatedMatchId, updateType, updateValue);
 		};
 	}
 
