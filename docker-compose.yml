@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  redis:
+    container_name: footies-redis
+    hostname: redis 
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - "6379:6379"
+  go-worker:
+    container_name: go-worker
+    hostname: goworker
+    build: ./go-worker
+    ports:
+      - "8888:8888"
+    environment:
+      - REDIS_ADDR=redis:6379
+      - FOOTBALL_API_KEY=2b5be7381emshecff710ccaa81d2p18023ejsnb92da6a6fcfa
+      - FOOTBALL_API_URL=http://mock:9000
+      - IN_BETWEEN_REFRESH_INFORMATION_SECS=10
+  mock-server:
+    container_name: mock-footballapi
+    hostname: mock
+    build: ./mock-footballapi
+    ports:
+      - "9000:9000"
+  node-api:
+    container_name: footies-api
+    hostname: footiesapi
+    build: ./node-api
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+      - WORKER_URL=http://goworker:8888
+  front:
+    container_name: footies_front
+    build: ./vue-front
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://footiesapi:3000
+      

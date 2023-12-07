@@ -5,6 +5,13 @@ import cors from "cors";
 import { matchsRouter } from "./controllers/matchs.controller";
 import { createServer } from "http";
 import { createClient } from "redis";
+import dotenv from "dotenv";
+
+try {
+	dotenv.config();
+} catch (err) {
+	console.log("No env file found");
+}
 
 (async () => {
 	const app = express();
@@ -13,7 +20,9 @@ import { createClient } from "redis";
 	app.use(cors()); // TODO: secure cors
 	app.use(matchsRouter);
 
-	const redis = createClient();
+	const redis = createClient({
+		url: process.env.REDIS_ADDR,
+	});
 	await redis.connect();
 	const sub = redis.duplicate();
 	await sub.connect();

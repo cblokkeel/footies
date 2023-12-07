@@ -1,7 +1,7 @@
 import { Match } from "~/types/match";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8888";
+const API_BASE_URL = process.env.WORKER_URL;
 
 export async function fetchMatchsByLeagueAndDate(
 	league: string,
