@@ -22,13 +22,18 @@ export const useBetStore = defineStore(
 			return true;
 		}
 
-		function matchOver(matchId: string, winner: "home" | "away" | "nil") {
+		function matchOver(
+			matchId: string,
+			winner: "home" | "away" | "nil",
+			multiplicater: number,
+		) {
 			const bet = bets.value[matchId];
 			if (!bet) {
 				return;
 			}
+			console.log(bet.bet, multiplicater);
 			if (bet.on === winner) {
-				coins.value += bet.bet * 2;
+				coins.value += bet.bet * multiplicater;
 			}
 			removeBet(matchId);
 		}

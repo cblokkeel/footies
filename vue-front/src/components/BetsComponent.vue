@@ -3,7 +3,6 @@ import { computed, onMounted, ref, watch } from "vue";
 import { Match } from "../api/api";
 import { useBetStore } from "../store/bet.store";
 import { useMatchStore } from "../store/match.store";
-import { storeToRefs } from "pinia";
 
 const props = defineProps<{ match: Match }>();
 const betStore = useBetStore();
@@ -29,12 +28,15 @@ onMounted(() => {
 
 watch(isMatchFinished, () => {
 	let winner: "home" | "away" | "nil" = "nil";
+	let multiplicater: number = 1;
 	if (props.match.homeTeam.score > props.match.awayTeam.score) {
 		winner = "home";
+		multiplicater = props.match.homeTeam.winProbability;
 	} else if (props.match.awayTeam.score > props.match.homeTeam.score) {
 		winner = "away";
+		multiplicater = props.match.awayTeam.winProbability;
 	}
-	betStore.matchOver(props.match.id, winner);
+	betStore.matchOver(props.match.id, winner, multiplicater);
 });
 
 function handleBet(on: "home" | "away") {
