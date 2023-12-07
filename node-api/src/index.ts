@@ -15,21 +15,22 @@ import { createClient } from "redis";
 
 	const redis = createClient();
 	await redis.connect();
+	const sub = redis.duplicate();
+	await sub.connect();
 
 	const wss = new WebSocket.Server({ server });
 
 	wss.on("connection", function (ws) {
 		console.log("New connection");
 		ws.on("message", function (msg) {
-			console.log(msg.toString());
-			redis.publish("monitoring", msg.toString());
 			msg.toString()
 				.split(",")
 				.forEach((matchId) => {
-					redis.subscribe(`match_${matchId}_update`, (msg) => {
+					sub.subscribe(`match_${matchId}_update`, (msg) => {
 						ws.send(`${matchId}_${msg}`);
 					});
 				});
+			redis.publish("monitoring", msg.toString());
 		});
 	});
 

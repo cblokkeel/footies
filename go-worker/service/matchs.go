@@ -121,7 +121,7 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 			if err := s.publishUpdate(ctx, matchID, fmt.Sprintf("status_%s", matchInfo.Status)); err != nil {
 				return err
 			}
-			lastHomeGoals = matchInfo.HomeTeam.Score
+			lastStatus = matchInfo.Status
 		}
 
 		sleepTime, err := strconv.Atoi(os.Getenv(constants.InBetweenRefreshInformation))

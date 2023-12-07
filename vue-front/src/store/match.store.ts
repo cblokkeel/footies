@@ -18,10 +18,9 @@ export const useMatchStore = defineStore("match", () => {
 		};
 
 		connexion.onmessage = function (msg) {
-			const splittedMsg = (msg.data as string).split("_");
-			const updatedMatchId = splittedMsg[0];
-			const updateType = splittedMsg[1];
-			const updateValue = splittedMsg[2];
+			const [updatedMatchId, updateType, updateValue] = (
+				msg.data as string
+			).split("_");
 			matchs.value
 				.filter((m) => m.id === updatedMatchId)
 				.map((m) => {
