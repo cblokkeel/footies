@@ -2,7 +2,7 @@ package job
 
 import (
 	"context"
-	"fmt"
+	"strings"
 
 	"github.com/cblokkeel/footies/pubsub"
 	"github.com/cblokkeel/footies/service"
@@ -33,9 +33,10 @@ func (j *Job) startMonitoringJob() {
 	for {
 		select {
 		case msg := <-ch:
-			matchID := msg.Payload
-			fmt.Println("Monitoring: ", matchID)
-			go j.matchService.MonitorMatch(context.Background(), matchID)
+			matchIDs := strings.Split(msg.Payload, ",")
+			for _, matchID := range matchIDs {
+				go j.matchService.MonitorMatch(context.Background(), matchID)
+			}
 		}
 	}
 }
