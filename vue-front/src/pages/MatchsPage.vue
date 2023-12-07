@@ -3,10 +3,17 @@ import { onMounted } from "vue";
 import { useMatchStore } from "../store/match.store";
 import Match from "../components/Match.vue";
 import LeagueSelector from "../components/LeagueSelector.vue";
+import { useLeagueStore } from "../store/leagues.store";
 const matchStore = useMatchStore();
+const leagueStore = useLeagueStore();
 
-onMounted(() => {
-	matchStore.fetchMatchs("39");
+onMounted(async () => {
+	await matchStore.fetchMatchs(leagueStore.selectedLeague);
+	await matchStore.monitorMatchs(
+		matchStore.matchs
+			.filter((match) => match.status === "ongoing")
+			.map((match) => match.id),
+	);
 });
 </script>
 

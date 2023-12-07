@@ -10,5 +10,41 @@ export const useMatchStore = defineStore("match", () => {
 		matchs.value = res;
 	}
 
-	return { matchs, fetchMatchs };
+	async function monitorMatchs(ids: string[]) {
+		const connexion = new WebSocket("ws://localhost:3000");
+		connexion.onopen = function (_) {
+			console.log("Connected");
+			connexion.send(ids.join(","));
+		};
+
+		connexion.onmessage = function (msg) {
+			const [updatedMatchId, updateType, updateValue] = (
+				msg.data as string
+			).split("_");
+			matchs.value
+				.filter((m) => m.id === updatedMatchId)
+				.map((m) => {
+					switch (updateType) {
+						case "chrono":
+							m.elapsed = parseInt(updateValue);
+							break;
+						case "homegoal":
+							m.homeTeam.score = parseInt(updateValue);
+							break;
+						case "awaygoal":
+							m.awayTeam.score = parseInt(updateValue);
+							break;
+						case "status":
+							m.status = updateValue;
+							break;
+						default:
+							console.log(
+								`unexpected update type: ${updateType}`,
+							);
+					}
+				});
+		};
+	}
+
+	return { matchs, fetchMatchs, monitorMatchs };
 });

@@ -87,6 +87,9 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 	}
 
 	var lastChrono int
+	var lastHomeGoals int
+	var lastAwayGoals int
+	var lastStatus dto.MatchStatus
 	for {
 		matchInfo, err := s.GetMatchByID(ctx, matchID, false)
 		if err != nil {
@@ -96,12 +99,31 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 			log.Printf("Match %s has ended", matchID)
 			break
 		}
-		if matchInfo.Elapsed != lastChrono { // Later check other informations
-			if err := s.pubsub.Publish(ctx, fmt.Sprintf("match_%s_update", matchID), matchInfo.Elapsed); err != nil {
-				return fmt.Errorf("error publishing update for match %s", matchID)
+		if matchInfo.Elapsed != lastChrono {
+			if err := s.publishUpdate(ctx, matchID, fmt.Sprintf("chrono_%d", matchInfo.Elapsed)); err != nil {
+				return err
 			}
 			lastChrono = matchInfo.Elapsed
 		}
+		if matchInfo.HomeTeam.Score != lastHomeGoals {
+			if err := s.publishUpdate(ctx, matchID, fmt.Sprintf("homegoal_%d", matchInfo.HomeTeam.Score)); err != nil {
+				return err
+			}
+			lastHomeGoals = matchInfo.HomeTeam.Score
+		}
+		if matchInfo.AwayTeam.Score != lastAwayGoals {
+			if err := s.publishUpdate(ctx, matchID, fmt.Sprintf("awaygoal_%d", matchInfo.AwayTeam.Score)); err != nil {
+				return err
+			}
+			lastAwayGoals = matchInfo.AwayTeam.Score
+		}
+		if matchInfo.Status != lastStatus {
+			if err := s.publishUpdate(ctx, matchID, fmt.Sprintf("status_%s", matchInfo.Status)); err != nil {
+				return err
+			}
+			lastStatus = matchInfo.Status
+		}
+
 		sleepTime, err := strconv.Atoi(os.Getenv(constants.InBetweenRefreshInformation))
 		if err != nil {
 			return fmt.Errorf("invalid configuration, %s is not a number", os.Getenv(constants.InBetweenRefreshInformation))
@@ -114,6 +136,13 @@ func (s *MatchService) MonitorMatch(ctx context.Context, matchID string) error {
 	}
 	if err := s.cache.RemoveSet(ctx, activeMatchesKey, matchID); err != nil {
 		return fmt.Errorf("could not remove %s to monitored match keys %v", matchID, activeMatchesKey)
+	}
+	return nil
+}
+
+func (s *MatchService) publishUpdate(ctx context.Context, matchID string, update string) error {
+	if err := s.pubsub.Publish(ctx, fmt.Sprintf("match_%s_update", matchID), update); err != nil {
+		return fmt.Errorf("error publishing update for match %s", matchID)
 	}
 	return nil
 }
