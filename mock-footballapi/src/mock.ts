@@ -53,7 +53,7 @@ export const mockedMatchs = [
 			},
 			status: {
 				long: "In Play",
-				short: "1H",
+				short: "FT",
 				elapsed: 24,
 			},
 		},
@@ -83,8 +83,8 @@ export const mockedMatchs = [
 			},
 		},
 		goals: {
-			home: 2,
-			away: 1,
+			home: 10,
+			away: 9,
 		},
 	},
 	{

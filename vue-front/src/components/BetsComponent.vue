@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ConfettiExplosion from "vue-confetti-explosion";
 import { computed, onMounted, ref, watch } from "vue";
 import { Match } from "../api/api";
 import { useBetStore } from "../store/bet.store";
@@ -14,6 +15,7 @@ const homeBetEl = ref<HTMLInputElement>();
 const awayBetEl = ref<HTMLInputElement>();
 
 onMounted(() => {
+	betStore.hasWon = false;
 	const bet = betStore.getBetByMatchId(props.match.id);
 	if (bet && homeBetEl && homeBetEl.value && awayBetEl && awayBetEl.value) {
 		if (bet.on === "home") {
@@ -56,6 +58,9 @@ function handleBet(on: "home" | "away") {
 
 <template>
 	<div class="bets__container">
+		<div class="confetti" v-if="betStore.hasWon">
+			<ConfettiExplosion />
+		</div>
 		<div class="bets__element">
 			<p>{{ match.homeTeam.winProbability }}</p>
 			<input
@@ -100,5 +105,14 @@ function handleBet(on: "home" | "away") {
 .bet {
 	height: 32px;
 	text-align: center;
+}
+
+.confetti {
+	position: absolute;
+	width: 50%;
+	height: 50%;
+	bottom: 0;
+	right: 0;
+	margin: auto;
 }
 </style>

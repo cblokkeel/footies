@@ -6,28 +6,37 @@ const betStore = useBetStore();
 </script>
 
 <template>
-	<p class="coins">
-		{{ betStore.coins }}
-		<img class="icon-coin" :src="coinsSrc" alt="coin-icon" />
-	</p>
+	<div class="coins-container">
+		<p class="coins">
+			{{ betStore.coins }}
+			<!-- <img class="icon-coin" :src="coinsSrc" alt="coin-icon" /> -->
+		</p>
+	</div>
 </template>
 
 <style scoped lang="scss">
-$yellow: #fff200;
-
+.coins-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
+	border: 1px solid #bbb;
+	border-radius: 1rem;
+	width: 8rem;
+	height: 4rem;
+	margin-bottom: auto;
+}
 .coins {
 	display: flex;
 	align-items: center;
-	gap: 10px;
-	color: $yellow;
-	position: absolute;
-	top: 15px;
-	right: 15px;
+	font-weight: bold;
+	font-size: 1.5rem;
+	top: 1rem;
+	right: 1rem;
 }
 
 .icon-coin {
-	width: 16px;
-	height: 16px;
-	color: $yellow;
+	width: 1rem;
+	height: 1rem;
 }
 </style>

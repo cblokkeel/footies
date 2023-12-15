@@ -24,25 +24,28 @@ defineProps<{ league: League }>();
 
 <style scoped lang="scss">
 .league {
-	background-color: #191919;
-	border-radius: 15px;
-	padding: 15px;
-	width: fit-content;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: white;
+	border: 1px solid #bbb;
+	width: 4rem;
+	height: 4rem;
+	border-radius: 1rem;
 	cursor: pointer;
 	transition: 0.2 ease-in-out;
 
 	&:hover {
-		background-color: #202020;
-		transform: scale(1.1);
+		transform: scale(1.05);
 	}
 
 	&--active {
-		background-color: green;
+		border: 1px solid #009a44;
 	}
 
 	&__logo {
-		width: 48px;
-		height: 48px;
+		width: 3rem;
+		height: 3rem;
 	}
 }
 </style>
