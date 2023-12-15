@@ -56,7 +56,7 @@ onMounted(async () => {
 	box-sizing: border-box;
 	border-radius: 1rem;
 	padding: 0.5rem;
-	border: 2px solid white;
+	border: 1px solid white;
 	height: 100%;
 }
 

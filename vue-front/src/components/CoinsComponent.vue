@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useBetStore } from "../store/bet.store";
-import coinsSrc from "../assets/coins.svg";
 
 const betStore = useBetStore();
 </script>
@@ -9,7 +8,6 @@ const betStore = useBetStore();
 	<div class="coins-container">
 		<p class="coins">
 			{{ betStore.coins }}
-			<!-- <img class="icon-coin" :src="coinsSrc" alt="coin-icon" /> -->
 		</p>
 	</div>
 </template>

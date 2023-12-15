@@ -69,7 +69,7 @@ function handleBet(on: "home" | "away") {
 				placeholder="0.0"
 				type="number"
 				ref="homeBetEl"
-				:disabled="match.status === 'finished'"
+				:disabled="match.status !== 'not_started'"
 			/>
 		</div>
 		<div class="bets__element">
@@ -80,7 +80,7 @@ function handleBet(on: "home" | "away") {
 				placeholder="0.0"
 				type="number"
 				ref="awayBetEl"
-				:disabled="match.status === 'finished'"
+				:disabled="match.status !== 'not_started'"
 			/>
 		</div>
 	</div>

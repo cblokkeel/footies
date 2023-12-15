@@ -4,9 +4,20 @@ import { Team } from "../api/api";
 
 const newGoal = ref<boolean>(false);
 const props = defineProps<{ team: Team; away: boolean }>();
+const teamUpdate = computed(() => props.team.name);
 const hasScored = computed(() => props.team.score);
 
+let hasTeamUpdated = false;
+
+watch(teamUpdate, () => {
+	hasTeamUpdated = true;
+});
+
 watch(hasScored, () => {
+	if (hasTeamUpdated) {
+		hasTeamUpdated = false;
+		return;
+	}
 	newGoal.value = true;
 	setTimeout(() => {
 		newGoal.value = false;
@@ -18,7 +29,7 @@ watch(hasScored, () => {
 	<div class="team" :class="{ 'team--away': away }">
 		<div class="team__informations">
 			<img class="team__logo" :src="team.logo" />
-			<span>{{ team.name }}</span>
+			<span class="team__name">{{ team.name }}</span>
 		</div>
 		<div class="team__score-container">
 			<span>{{ team.score }}</span>
@@ -37,13 +48,17 @@ watch(hasScored, () => {
 	&__informations {
 		display: flex;
 		align-items: center;
-		gap: 15px;
+		gap: 1rem;
 		margin: 0 3rem;
 	}
 
 	&__logo {
 		height: 3rem;
 		width: 3rem;
+	}
+
+	&__name {
+		font-size: 1.5rem;
 	}
 
 	&__score-container {
