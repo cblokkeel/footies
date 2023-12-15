@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Match } from "../api/api";
 import BetsComponent from "./BetsComponent.vue";
-import Team from "./Team.vue";
+import Team from "./TeamComponent.vue";
 
 defineProps<{ match: Match }>();
 </script>

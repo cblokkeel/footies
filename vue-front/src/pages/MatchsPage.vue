@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useMatchStore } from "../store/match.store";
-import Match from "../components/Match.vue";
-import LeagueSelector from "../components/LeagueSelector.vue";
+import Match from "../components/MatchComponent.vue";
+import LeagueSelector from "../components/LeagueSelectorComponent.vue";
 import { useLeagueStore } from "../store/leagues.store";
 import CoinsComponent from "../components/CoinsComponent.vue";
 const matchStore = useMatchStore();
