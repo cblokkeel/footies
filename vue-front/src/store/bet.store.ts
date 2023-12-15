@@ -8,6 +8,7 @@ export const useBetStore = defineStore(
 			{},
 		);
 		const coins = ref<number>(10000);
+		const hasWon = ref<boolean>(false);
 
 		function betOnMatch(
 			matchId: string,
@@ -34,6 +35,10 @@ export const useBetStore = defineStore(
 			console.log(bet.bet, multiplicater);
 			if (bet.on === winner) {
 				coins.value += bet.bet * multiplicater;
+				hasWon.value = true;
+				setTimeout(() => {
+					hasWon.value = false;
+				}, 5000);
 			}
 			removeBet(matchId);
 		}
@@ -62,7 +67,7 @@ export const useBetStore = defineStore(
 			bets.value = filteredBets;
 		}
 
-		return { bets, coins, betOnMatch, getBetByMatchId, matchOver };
+		return { bets, coins, hasWon, betOnMatch, getBetByMatchId, matchOver };
 	},
 	{
 		persist: true,

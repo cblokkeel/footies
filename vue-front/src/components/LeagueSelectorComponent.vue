@@ -20,8 +20,9 @@ onMounted(() => {
 <style scoped lang="scss">
 .league-selector {
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
-	gap: 15px;
-	margin-bottom: 60px;
+	gap: 1rem;
+	margin-bottom: auto;
 }
 </style>
